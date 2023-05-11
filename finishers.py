@@ -3160,8 +3160,12 @@ def ims_minako():
     damage_of_attack = swing_damage + burn_damage + refresh_penalty
     return damage_of_attack
 
+  
+# Stuff below here has been written before the Refresh rule change was implemented and therefore uses an older (and worse) method for how to implement the refresh process
+# Therefore everything below here will not work in the current script and needs to be rewritten
+# It is only here for archival purposes
 
-# old stuff
+
 def vanilla4():
     soul = 4
     swing_damage = 0
