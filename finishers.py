@@ -1,4 +1,3 @@
-# new stuff
 def special_week():
     soul = 3
     swing_damage = 0
