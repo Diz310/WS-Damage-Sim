@@ -1,4 +1,3 @@
-# new stuff
 def ney():
     milled_cards = 7
     swing_damage = 0
@@ -3315,7 +3314,11 @@ def ims_minako():
     return damage_of_attack
 
 
-# old stuff
+# Stuff below here has been written before the Refresh rule change was implemented and therefore uses an older (and worse) method for how to implement the refresh process
+# Therefore everything below here will not work in the current script and needs to be rewritten
+# It is only here for archival purposes
+
+
 def vanilla4():
     soul = 4
     swing_damage = 0
