@@ -1,3 +1,158 @@
+# new stuff
+def ney():
+    milled_cards = 7
+    swing_damage = 0
+    first_burn = 0
+    second_burn = 0
+    burn_value = 4
+    soul = 3
+    reshuffled_cards = 3
+    refresh_penalty = 0
+
+    # First burn 4
+    if sum(own_deck[:milled_cards]) >= 3:
+        for burn in range(burn_value):
+            if len(opp_deck) == 0:
+                refresh_penalty += refresh()
+            if opp_deck[0] == "DMG":
+                first_burn += 1
+                opp_deck.pop(0)
+            else:
+                opp_deck.pop(0)
+                first_burn = 0
+                break
+
+    # Shuffling back damage
+    if sum(own_deck[:milled_cards]) >= 4:
+        for char in range(reshuffled_cards):
+            opp_deck.append("DMG")
+        random.shuffle(opp_deck)
+
+    # Second burn 4
+    if sum(own_deck[:milled_cards]) >= 6:
+        for burn in range(burn_value):
+            if len(opp_deck) == 0:
+                refresh_penalty += refresh()
+            if opp_deck[0] == "DMG":
+                second_burn += 1
+                opp_deck.pop(0)
+            else:
+                opp_deck.pop(0)
+                second_burn = 0
+                break
+
+    del own_deck[:milled_cards]
+
+    # Vanilla Swing + Triggercheck
+    soul += own_deck[0]
+    own_deck.pop(0)
+    for soul in range(soul):
+        if len(opp_deck) == 0:
+            refresh_penalty += refresh()
+        if opp_deck[0] == "DMG":
+            swing_damage += 1
+            opp_deck.pop(0)
+        else:
+            swing_damage = 0
+            opp_deck.pop(0)
+            break
+
+    if len(opp_deck) == 0:
+        refresh_penalty += refresh()
+
+    damage_of_attack = swing_damage + refresh_penalty + first_burn + second_burn
+    return damage_of_attack
+
+
+def twilight():
+    swing_damage = 0
+    on_attack_burn_damage = 0
+    cancel_burn_damage = 0
+    burn_value = 3
+    soul = 3
+    refresh_penalty = 0
+    damage_canceled = False
+
+    # On Attack Burn
+    for burn in range(burn_value):
+        if len(opp_deck) == 0:
+            refresh_penalty += refresh()
+        if opp_deck[0] == "DMG":
+            on_attack_burn_damage += 1
+            opp_deck.pop(0)
+        else:
+            opp_deck.pop(0)
+            on_attack_burn_damage = 0
+            damage_canceled = True
+            break
+
+    # Cancel burn
+    if damage_canceled:
+        if len(opp_deck) == 0:
+            refresh_penalty += refresh()
+        if opp_deck[0] == "DMG":
+            cancel_burn_damage = 1
+            opp_deck.pop(0)
+        else:
+            opp_deck.pop(0)
+
+    # Vanilla Swing + Triggercheck
+    soul += own_deck[0]
+    own_deck.pop(0)
+    for soul in range(soul):
+        if len(opp_deck) == 0:
+            refresh_penalty += refresh()
+        if opp_deck[0] == "DMG":
+            swing_damage += 1
+            opp_deck.pop(0)
+        else:
+            swing_damage = 0
+            opp_deck.pop(0)
+            break
+
+    if len(opp_deck) == 0:
+        refresh_penalty += refresh()
+
+    damage_of_attack = swing_damage + on_attack_burn_damage + refresh_penalty + cancel_burn_damage
+    return damage_of_attack
+
+
+def haato():
+    soul = 3
+    swing_damage = 0
+    refresh_penalty = 0
+
+    # On Attack Burn 1
+    if len(opp_deck) == 0:
+        refresh_penalty += refresh()
+    if opp_deck[0] == "DMG":
+        on_attack_burn_damage = 1
+        opp_deck.pop(0)
+    else:
+        on_attack_burn_damage = 0
+        opp_deck.pop(0)
+
+    # Vanilla Swing + Triggercheck
+    soul += own_deck[0]
+    own_deck.pop(0)
+    for soul in range(soul):
+        if len(opp_deck) == 0:
+            refresh_penalty += refresh()
+        if opp_deck[0] == "DMG":
+            swing_damage += 1
+            opp_deck.pop(0)
+        else:
+            swing_damage = 0
+            opp_deck.pop(0)
+            break
+
+    if len(opp_deck) == 0:
+        refresh_penalty += refresh()
+
+    damage_of_attack = swing_damage + on_attack_burn_damage + refresh_penalty
+    return damage_of_attack
+
+
 def special_week():
     soul = 3
     swing_damage = 0
@@ -3159,12 +3314,8 @@ def ims_minako():
     damage_of_attack = swing_damage + burn_damage + refresh_penalty
     return damage_of_attack
 
-  
-# Stuff below here has been written before the Refresh rule change was implemented and therefore uses an older (and worse) method for how to implement the refresh process
-# Therefore everything below here will not work in the current script and needs to be rewritten
-# It is only here for archival purposes
 
-
+# old stuff
 def vanilla4():
     soul = 4
     swing_damage = 0
