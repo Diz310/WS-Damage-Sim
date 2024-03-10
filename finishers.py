@@ -1,3 +1,1619 @@
+def sby_mai():
+    soul = 3
+    swing_damage = 0
+    burn_value = 2
+    refresh_penalty = 0
+    burn_damage = 0
+    number_of_mills = 3
+    milled_cards = 2
+
+    # CX Combo
+    for mill in range(number_of_mills):
+        climax_checked = False
+        intermediate_burn_value = 0
+        for card in range(milled_cards):
+            if len(opp_deck) == 0:
+                refresh_penalty += refresh()
+            if opp_deck[-1] == "CX":
+                climax_checked = True
+                opp_deck.pop(-1)
+            else:
+                opp_deck.pop(-1)
+        if climax_checked:
+            for burn in range(burn_value):
+                if len(opp_deck) == 0:
+                    refresh_penalty += refresh()
+                if opp_deck[0] == "DMG":
+                    opp_deck.pop(0)
+                    intermediate_burn_value += 1
+                else:
+                    opp_deck.pop(0)
+                    intermediate_burn_value = 0
+                    break
+        if intermediate_burn_value == burn_value:
+            burn_damage += burn_value
+
+    # Vanilla Swing + Triggercheck
+    soul += own_deck[0]
+    own_deck.pop(0)
+    for soul in range(soul):
+        if len(opp_deck) == 0:
+            refresh_penalty += refresh()
+        if opp_deck[0] == "DMG":
+            swing_damage += 1
+            opp_deck.pop(0)
+        else:
+            swing_damage = 0
+            opp_deck.pop(0)
+            break
+
+    if len(opp_deck) == 0:
+        refresh_penalty += refresh()
+
+    damage_of_attack = burn_damage + refresh_penalty + swing_damage
+    return damage_of_attack
+
+
+def csm_aki_with_events():
+    soul = 3
+    swing_damage = 0
+    icy_tail_value = 4
+    refresh_penalty = 0
+    icy_tail_damage = 0
+    cx_hits = 0
+    event_counter = 3
+
+    # Event checks
+    while event_counter > 0:
+        if len(opp_deck) == 0:
+            refresh_penalty += refresh()
+        if opp_deck[-1] == "DMG":
+            opp_deck.pop(-1)
+        else:
+            break
+        event_counter -= 1
+
+    # Icy-Tail effect
+    for value in range(icy_tail_value):
+        if len(opp_deck) == 0:
+            refresh_penalty += refresh()
+        if opp_deck[-1] == "CX":
+            cx_hits += 1
+            opp_deck.pop(-1)
+        else:
+            opp_deck.pop(-1)
+
+    # Burn 1 for each CX
+    for icy_tail_cx in range(cx_hits):
+        if len(opp_deck) == 0:
+            refresh_penalty += refresh()
+        if opp_deck[0] == "DMG":
+            opp_deck.pop(0)
+            icy_tail_damage += 1
+        else:
+            opp_deck.pop(0)
+
+    # Event checks
+    while event_counter > 0:
+        if len(opp_deck) == 0:
+            refresh_penalty += refresh()
+        if opp_deck[-1] == "DMG":
+            opp_deck.pop(-1)
+        else:
+            break
+        event_counter -= 1
+
+    # Vanilla Swing + Triggercheck
+    soul += own_deck[0]
+    own_deck.pop(0)
+    for soul in range(soul):
+        if len(opp_deck) == 0:
+            refresh_penalty += refresh()
+        if opp_deck[0] == "DMG":
+            swing_damage += 1
+            opp_deck.pop(0)
+        else:
+            swing_damage = 0
+            opp_deck.pop(0)
+            break
+
+    if len(opp_deck) == 0:
+        refresh_penalty += refresh()
+
+    damage_of_attack = icy_tail_damage + refresh_penalty + swing_damage
+    return damage_of_attack
+
+
+def sfn_frieren():
+    if opp_deck[-2] == "DMG":
+        opp_deck.pop(-2)
+    if opp_deck[-1] == "DMG":
+        opp_deck.pop(-1)
+
+    damage_of_attack = 0
+    return damage_of_attack
+
+
+def bav_arisu():
+    soul = 3
+    swing_damage = 0
+    icy_tail_damage = 0
+    number_of_icy_tails = 2
+    icy_tail_value = 8
+    refresh_penalty = 0
+
+    # Double Icy Tail
+    for icy_tail in range(number_of_icy_tails):
+        cx_hits = 0
+        for value in range(icy_tail_value):
+            if len(opp_deck) == 0:
+                refresh_penalty += refresh()
+            if opp_deck[-1] == "CX":
+                cx_hits += 1
+                opp_deck.pop(-1)
+            else:
+                opp_deck.pop(-1)
+
+        intermediate_burn_value = 0
+        for icy_tail_cx in range(cx_hits):
+            if len(opp_deck) == 0:
+                refresh_penalty += refresh()
+            if opp_deck[0] == "DMG":
+                opp_deck.pop(0)
+                intermediate_burn_value += 1
+            else:
+                opp_deck.pop(0)
+                intermediate_burn_value = 0
+                break
+
+        if intermediate_burn_value == cx_hits:
+            icy_tail_damage += intermediate_burn_value
+
+    # Vanilla Swing + Triggercheck
+    soul += own_deck[0]
+    own_deck.pop(0)
+    for soul in range(soul):
+        if len(opp_deck) == 0:
+            refresh_penalty += refresh()
+        if opp_deck[0] == "DMG":
+            swing_damage += 1
+            opp_deck.pop(0)
+        else:
+            swing_damage = 0
+            opp_deck.pop(0)
+            break
+
+    if len(opp_deck) == 0:
+        refresh_penalty += refresh()
+
+    damage_of_attack = icy_tail_damage + refresh_penalty + swing_damage
+    return damage_of_attack
+
+
+def lrc_brainstorm():
+    if opp_deck[1] == "CX":
+        opp_deck.pop(1)
+        opp_deck.insert(0, "CX")
+    elif opp_deck[1] == "lvl0" and not opp_deck[0] == "CX":
+        opp_deck.pop(1)
+        opp_deck.insert(0, "lvl0")
+
+    damage_of_attack = 0
+    return damage_of_attack
+
+
+def csm_aki():
+    soul = 3
+    swing_damage = 0
+    icy_tail_value = 4
+    refresh_penalty = 0
+    icy_tail_damage = 0
+    cx_hits = 0
+
+    # Icy-Tail effect
+    for value in range(icy_tail_value):
+        if len(opp_deck) == 0:
+            refresh_penalty += refresh()
+        if opp_deck[-1] == "CX":
+            cx_hits += 1
+            opp_deck.pop(-1)
+        else:
+            opp_deck.pop(-1)
+
+    # Burn 1 for each CX
+    for icy_tail_cx in range(cx_hits):
+        if len(opp_deck) == 0:
+            refresh_penalty += refresh()
+        if opp_deck[0] == "DMG":
+            opp_deck.pop(0)
+            icy_tail_damage += 1
+        else:
+            opp_deck.pop(0)
+
+    # Vanilla Swing + Triggercheck
+    soul += own_deck[0]
+    own_deck.pop(0)
+    for soul in range(soul):
+        if len(opp_deck) == 0:
+            refresh_penalty += refresh()
+        if opp_deck[0] == "DMG":
+            swing_damage += 1
+            opp_deck.pop(0)
+        else:
+            swing_damage = 0
+            opp_deck.pop(0)
+            break
+
+    if len(opp_deck) == 0:
+        refresh_penalty += refresh()
+
+    damage_of_attack = icy_tail_damage + refresh_penalty + swing_damage
+    return damage_of_attack
+
+
+def sfn_himmel():
+    soul = 3
+    swing_damage = 0
+    burn_value = 2
+    icy_tail_value = 3
+    refresh_penalty = 0
+    icy_tail_damage = 0
+    cx_hits = 0
+
+    # Icy-Tail effect
+    for icy_tail in range(icy_tail_value):
+        if len(opp_deck) == 0:
+            refresh_penalty += refresh()
+        if opp_deck[-1] == "CX":
+            cx_hits += 1
+            opp_deck.pop(-1)
+        else:
+            opp_deck.pop(-1)
+
+    # Damage dealing loop
+    for icy_tail_cx in range(cx_hits):
+        intermediate_burn_value = 0
+        for burn in range(burn_value):
+            if len(opp_deck) == 0:
+                refresh_penalty += refresh()
+            if opp_deck[0] == "DMG":
+                opp_deck.pop(0)
+                intermediate_burn_value += 1
+            else:
+                opp_deck.pop(0)
+                intermediate_burn_value = 0
+                break
+        if intermediate_burn_value == burn_value:
+            icy_tail_damage += burn_value
+
+    # Vanilla Swing + Triggercheck
+    soul += own_deck[0]
+    own_deck.pop(0)
+    for soul in range(soul):
+        if len(opp_deck) == 0:
+            refresh_penalty += refresh()
+        if opp_deck[0] == "DMG":
+            swing_damage += 1
+            opp_deck.pop(0)
+        else:
+            swing_damage = 0
+            opp_deck.pop(0)
+            break
+
+    if len(opp_deck) == 0:
+        refresh_penalty += refresh()
+
+    damage_of_attack = icy_tail_damage + refresh_penalty + swing_damage
+    return damage_of_attack
+
+
+def sds_hendrickson():
+    swing_damage = 0
+    soul = 3
+    refresh_penalty = 0
+    burn_damage = 0
+    burn_value = 4
+
+    # On attack scry
+    if len(opp_deck) == 0:
+        refresh_penalty += refresh()
+    if opp_deck[0] == "CX":
+        opp_deck.pop(0)
+
+    # On attack burn 4
+    for burn in range(burn_value):
+        if len(opp_deck) == 0:
+            refresh_penalty += refresh()
+        if opp_deck[0] == "DMG":
+            burn_damage += 1
+            opp_deck.pop(0)
+        else:
+            burn_damage = 0
+            opp_deck.pop(0)
+            break
+
+    # Vanilla Swing + Triggercheck
+    soul += own_deck[0]
+    own_deck.pop(0)
+    for soul in range(soul):
+        if len(opp_deck) == 0:
+            refresh_penalty += refresh()
+        if opp_deck[0] == "DMG":
+            swing_damage += 1
+            opp_deck.pop(0)
+        else:
+            swing_damage = 0
+            opp_deck.pop(0)
+            break
+
+    if len(opp_deck) == 0:
+        refresh_penalty += refresh()
+
+    damage_of_attack = swing_damage + refresh_penalty + burn_damage
+    return damage_of_attack
+
+
+def ggst_lucifero_restand():
+    swing_damage = 0
+    second_swing_damage = 0
+    soul = 3
+    restand_soul = 3
+    refresh_penalty = 0
+    burn_damage = 0
+    second_burn_damage = 0
+    burn_value = 3
+
+    # On attack burn 3
+    for burn in range(burn_value):
+        if len(opp_deck) == 0:
+            refresh_penalty += refresh()
+        if opp_deck[0] == "DMG":
+            burn_damage += 1
+            opp_deck.pop(0)
+        else:
+            burn_damage = 0
+            opp_deck.pop(0)
+            break
+
+    # Vanilla Swing + Triggercheck
+    soul += own_deck[0]
+    restand_soul += own_deck[0]
+    own_deck.pop(0)
+    for soul in range(soul):
+        if len(opp_deck) == 0:
+            refresh_penalty += refresh()
+        if opp_deck[0] == "DMG":
+            swing_damage += 1
+            opp_deck.pop(0)
+        else:
+            swing_damage = 0
+            opp_deck.pop(0)
+            break
+
+    # On attack burn 3
+    for burn in range(burn_value):
+        if len(opp_deck) == 0:
+            refresh_penalty += refresh()
+        if opp_deck[0] == "DMG":
+            second_burn_damage += 1
+            opp_deck.pop(0)
+        else:
+            second_burn_damage = 0
+            opp_deck.pop(0)
+            break
+
+    # Vanilla Swing + Triggercheck
+    restand_soul += own_deck[0]
+    own_deck.pop(0)
+    for soul in range(restand_soul):
+        if len(opp_deck) == 0:
+            refresh_penalty += refresh()
+        if opp_deck[0] == "DMG":
+            second_swing_damage += 1
+            opp_deck.pop(0)
+        else:
+            second_swing_damage = 0
+            opp_deck.pop(0)
+            break
+
+    if len(opp_deck) == 0:
+        refresh_penalty += refresh()
+
+    damage_of_attack = swing_damage + refresh_penalty + burn_damage + second_swing_damage + second_burn_damage
+    return damage_of_attack
+
+
+def ggst_ramlethal_restand():
+    swing_damage = 0
+    second_swing_damage = 0
+    soul = 3
+    restand_soul = 3
+    refresh_penalty = 0
+    burn_damage = 0
+
+    # On attack burn 1
+    if len(opp_deck) == 0:
+        refresh_penalty += refresh()
+    if opp_deck[0] == "DMG":
+        burn_damage += 1
+        opp_deck.pop(0)
+    else:
+        opp_deck.pop(0)
+
+    # Vanilla Swing + Triggercheck
+    soul += own_deck[0]
+    restand_soul += own_deck[0]
+    own_deck.pop(0)
+    for soul in range(soul):
+        if len(opp_deck) == 0:
+            refresh_penalty += refresh()
+        if opp_deck[0] == "DMG":
+            swing_damage += 1
+            opp_deck.pop(0)
+        else:
+            swing_damage = 0
+            opp_deck.pop(0)
+            break
+
+    # On attack burn 1
+    if len(opp_deck) == 0:
+        refresh_penalty += refresh()
+    if opp_deck[0] == "DMG":
+        burn_damage += 1
+        opp_deck.pop(0)
+    else:
+        opp_deck.pop(0)
+
+    # Vanilla Swing + Triggercheck
+    restand_soul += own_deck[0]
+    own_deck.pop(0)
+    for soul in range(restand_soul):
+        if len(opp_deck) == 0:
+            refresh_penalty += refresh()
+        if opp_deck[0] == "DMG":
+            second_swing_damage += 1
+            opp_deck.pop(0)
+        else:
+            second_swing_damage = 0
+            opp_deck.pop(0)
+            break
+
+    if len(opp_deck) == 0:
+        refresh_penalty += refresh()
+
+    damage_of_attack = swing_damage + refresh_penalty + burn_damage + second_swing_damage
+    return damage_of_attack
+
+
+def ggst_ramlethal():
+    swing_damage = 0
+    soul = 3
+    refresh_penalty = 0
+    burn_damage = 0
+
+    # On attack burn 1
+    if opp_deck[0] == "DMG":
+        burn_damage += 1
+        opp_deck.pop(0)
+    else:
+        burn_damage = 0
+        opp_deck.pop(0)
+
+    # Vanilla Swing + Triggercheck
+    soul += own_deck[0]
+    own_deck.pop(0)
+    for soul in range(soul):
+        if len(opp_deck) == 0:
+            refresh_penalty += refresh()
+        if opp_deck[0] == "DMG":
+            swing_damage += 1
+            opp_deck.pop(0)
+        else:
+            swing_damage = 0
+            opp_deck.pop(0)
+            break
+
+    if len(opp_deck) == 0:
+        refresh_penalty += refresh()
+
+    damage_of_attack = swing_damage + refresh_penalty + burn_damage
+    return damage_of_attack
+
+
+def ggst_lucifero():
+    swing_damage = 0
+    soul = 3
+    refresh_penalty = 0
+    burn_damage = 0
+    burn_value = 3
+
+    # On attack burn 3
+    for burn in range(burn_value):
+        if len(opp_deck) == 0:
+            refresh_penalty += refresh()
+        if opp_deck[0] == "DMG":
+            burn_damage += 1
+            opp_deck.pop(0)
+        else:
+            burn_damage = 0
+            opp_deck.pop(0)
+            break
+
+    # Vanilla Swing + Triggercheck
+    soul += own_deck[0]
+    own_deck.pop(0)
+    for soul in range(soul):
+        if len(opp_deck) == 0:
+            refresh_penalty += refresh()
+        if opp_deck[0] == "DMG":
+            swing_damage += 1
+            opp_deck.pop(0)
+        else:
+            swing_damage = 0
+            opp_deck.pop(0)
+            break
+
+    if len(opp_deck) == 0:
+        refresh_penalty += refresh()
+
+    damage_of_attack = swing_damage + refresh_penalty + burn_damage
+    return damage_of_attack
+
+
+def ggst_potemkin():
+    swing_damage = 0
+    soul = 3
+    refresh_penalty = 0
+    burn_damage = 0
+
+    # Vanilla Swing + Triggercheck
+    soul += own_deck[0]
+    own_deck.pop(0)
+    for soul in range(soul):
+        if len(opp_deck) == 0:
+            refresh_penalty += refresh()
+        if opp_deck[0] == "DMG":
+            swing_damage += 1
+            opp_deck.pop(0)
+        else:
+            swing_damage = 0
+            opp_deck.pop(0)
+            break
+
+    # On reverse topdeck + burn
+    burn_damage += 3
+    if opp_deck[0] == "DMG":
+        burn_damage += 1
+        opp_deck.pop(0)
+    else:
+        burn_damage = 0
+        opp_deck.pop(0)
+
+    if len(opp_deck) == 0:
+        refresh_penalty += refresh()
+
+    damage_of_attack = swing_damage + refresh_penalty + burn_damage
+    return damage_of_attack
+
+
+def ggst_may_restand():
+    swing_damage = 0
+    second_swing_damage = 0
+    soul = 3
+    restand_soul = 3
+    refresh_penalty = 0
+    burn_value = 2
+    cancel_burn_damage = 0
+    damage_canceled = False
+    number_of_cancel_burns = 2
+
+    # Vanilla Swing + Triggercheck
+    soul += own_deck[0]
+    restand_soul += own_deck[0]
+    own_deck.pop(0)
+    number_of_cancel_burns += 2
+    for soul in range(soul):
+        if len(opp_deck) == 0:
+            refresh_penalty += refresh()
+        if opp_deck[0] == "DMG":
+            swing_damage += 1
+            opp_deck.pop(0)
+        else:
+            swing_damage = 0
+            opp_deck.pop(0)
+            damage_canceled = True
+            break
+
+    # Cancel burns
+    if damage_canceled:
+        for cancel_burn in range(number_of_cancel_burns):
+            intermediate_burn_value = 0
+            for burn in range(burn_value):
+                if len(opp_deck) == 0:
+                    refresh_penalty += refresh()
+                if opp_deck[0] == "DMG":
+                    opp_deck.pop(0)
+                    intermediate_burn_value += 1
+                else:
+                    opp_deck.pop(0)
+                    intermediate_burn_value = 0
+                    break
+            if intermediate_burn_value == burn_value:
+                cancel_burn_damage += burn_value
+        number_of_cancel_burns = 0
+        damage_canceled = False
+
+    # Vanilla Swing + Triggercheck
+    restand_soul += own_deck[0]
+    own_deck.pop(0)
+    number_of_cancel_burns += 2
+    for soul in range(restand_soul):
+        if len(opp_deck) == 0:
+            refresh_penalty += refresh()
+        if opp_deck[0] == "DMG":
+            second_swing_damage += 1
+            opp_deck.pop(0)
+        else:
+            second_swing_damage = 0
+            opp_deck.pop(0)
+            damage_canceled = True
+            break
+
+    # Cancel burns
+    if damage_canceled:
+        for cancel_burn in range(number_of_cancel_burns):
+            intermediate_burn_value = 0
+            for burn in range(burn_value):
+                if len(opp_deck) == 0:
+                    refresh_penalty += refresh()
+                if opp_deck[0] == "DMG":
+                    opp_deck.pop(0)
+                    intermediate_burn_value += 1
+                else:
+                    opp_deck.pop(0)
+                    intermediate_burn_value = 0
+                    break
+            if intermediate_burn_value == burn_value:
+                cancel_burn_damage += burn_value
+
+    if len(opp_deck) == 0:
+        refresh_penalty += refresh()
+
+    damage_of_attack = swing_damage + refresh_penalty + cancel_burn_damage + second_swing_damage
+    return damage_of_attack
+
+
+def ggst_ky():
+    swing_damage = 0
+    second_swing_damage = 0
+    soul = 3
+    restand_soul = 3
+    refresh_penalty = 0
+    burn_value = 2
+    cancel_burn_damage = 0
+    damage_canceled = False
+    cancel_burns_resolved = False
+    number_of_cancel_burns = 4
+
+    # Vanilla Swing + Triggercheck
+    soul += own_deck[0]
+    restand_soul += own_deck[0]
+    own_deck.pop(0)
+    for soul in range(soul):
+        if len(opp_deck) == 0:
+            refresh_penalty += refresh()
+        if opp_deck[0] == "DMG":
+            swing_damage += 1
+            opp_deck.pop(0)
+        else:
+            swing_damage = 0
+            opp_deck.pop(0)
+            damage_canceled = True
+            break
+
+    # Cancel burns
+    if damage_canceled:
+        for cancel_burn in range(number_of_cancel_burns):
+            intermediate_burn_value = 0
+            for burn in range(burn_value):
+                if len(opp_deck) == 0:
+                    refresh_penalty += refresh()
+                if opp_deck[0] == "DMG":
+                    opp_deck.pop(0)
+                    intermediate_burn_value += 1
+                else:
+                    opp_deck.pop(0)
+                    intermediate_burn_value = 0
+                    break
+            if intermediate_burn_value == burn_value:
+                cancel_burn_damage += burn_value
+        cancel_burns_resolved = True
+
+    # Vanilla Swing + Triggercheck
+    restand_soul += own_deck[0]
+    own_deck.pop(0)
+    for soul in range(restand_soul):
+        if len(opp_deck) == 0:
+            refresh_penalty += refresh()
+        if opp_deck[0] == "DMG":
+            second_swing_damage += 1
+            opp_deck.pop(0)
+        else:
+            second_swing_damage = 0
+            opp_deck.pop(0)
+            damage_canceled = True
+            break
+
+    # Cancel burns
+    if damage_canceled and not cancel_burns_resolved:
+        for cancel_burn in range(number_of_cancel_burns):
+            intermediate_burn_value = 0
+            for burn in range(burn_value):
+                if len(opp_deck) == 0:
+                    refresh_penalty += refresh()
+                if opp_deck[0] == "DMG":
+                    opp_deck.pop(0)
+                    intermediate_burn_value += 1
+                else:
+                    opp_deck.pop(0)
+                    intermediate_burn_value = 0
+                    break
+            if intermediate_burn_value == burn_value:
+                cancel_burn_damage += burn_value
+
+    if len(opp_deck) == 0:
+        refresh_penalty += refresh()
+
+    damage_of_attack = swing_damage + refresh_penalty + cancel_burn_damage + second_swing_damage
+    return damage_of_attack
+
+
+def ggst_testament():
+    refresh_penalty = 0
+    burn_damage = 0
+    number_of_burns = 2
+
+    # 2x burn 1
+    for burn in range(number_of_burns):
+        if len(opp_deck) == 0:
+            refresh_penalty += refresh()
+        if opp_deck[0] == "DMG":
+            opp_deck.pop(0)
+            burn_damage += 1
+        else:
+            opp_deck.pop(0)
+
+    if len(opp_deck) == 0:
+        refresh_penalty += refresh()
+
+    damage_of_attack = burn_damage + refresh_penalty
+    return damage_of_attack
+
+
+def ggst_may():
+    swing_damage = 0
+    soul = 3
+    refresh_penalty = 0
+    burn_value = 2
+    cancel_burn_damage = 0
+    damage_canceled = False
+    number_of_cancel_burns = 2
+
+    # Vanilla Swing + Triggercheck
+    soul += own_deck[0]
+    own_deck.pop(0)
+    for soul in range(soul):
+        if len(opp_deck) == 0:
+            refresh_penalty += refresh()
+        if opp_deck[0] == "DMG":
+            swing_damage += 1
+            opp_deck.pop(0)
+        else:
+            swing_damage = 0
+            opp_deck.pop(0)
+            damage_canceled = True
+            break
+
+    if len(opp_deck) == 0:
+        refresh_penalty += refresh()
+
+    # Cancel burns
+    if damage_canceled:
+        for cancel_burn in range(number_of_cancel_burns):
+            intermediate_burn_value = 0
+            for burn in range(burn_value):
+                if len(opp_deck) == 0:
+                    refresh_penalty += refresh()
+                if opp_deck[0] == "DMG":
+                    opp_deck.pop(0)
+                    intermediate_burn_value += 1
+                else:
+                    opp_deck.pop(0)
+                    intermediate_burn_value = 0
+                    break
+            if intermediate_burn_value == burn_value:
+                cancel_burn_damage += burn_value
+
+    if len(opp_deck) == 0:
+        refresh_penalty += refresh()
+
+    damage_of_attack = swing_damage + refresh_penalty + cancel_burn_damage
+    return damage_of_attack
+
+
+def vanilla2():
+    soul = 2
+    swing_damage = 0
+    refresh_penalty = 0
+
+    # Vanilla Swing + Triggercheck
+    soul += own_deck[0]
+    own_deck.pop(0)
+    for soul in range(soul):
+        if len(opp_deck) == 0:
+            refresh_penalty += refresh()
+        if opp_deck[0] == "DMG":
+            swing_damage += 1
+            opp_deck.pop(0)
+        else:
+            swing_damage = 0
+            opp_deck.pop(0)
+            break
+
+    if len(opp_deck) == 0:
+        refresh_penalty += refresh()
+
+    damage_of_attack = swing_damage + refresh_penalty
+    return damage_of_attack
+
+
+def vanilla3():
+    soul = 3
+    swing_damage = 0
+    refresh_penalty = 0
+
+    # Vanilla Swing + Triggercheck
+    soul += own_deck[0]
+    own_deck.pop(0)
+    for soul in range(soul):
+        if len(opp_deck) == 0:
+            refresh_penalty += refresh()
+        if opp_deck[0] == "DMG":
+            swing_damage += 1
+            opp_deck.pop(0)
+        else:
+            swing_damage = 0
+            opp_deck.pop(0)
+            break
+
+    if len(opp_deck) == 0:
+        refresh_penalty += refresh()
+
+    damage_of_attack = swing_damage + refresh_penalty
+    return damage_of_attack
+
+
+def ryo():
+    swing_damage = 0
+    soul = 3
+    reshuffled_cards = 3
+    refresh_penalty = 0
+
+    # Shuffling back damage
+    for card in range(reshuffled_cards):
+        opp_deck.append("DMG")
+    random.shuffle(opp_deck)
+
+    # Vanilla Swing + Triggercheck
+    trigger = random.randint(1, int(own_number_of_cards))
+    if trigger <= own_soul_triggers:
+        soul += 1
+    own_deck.pop(0)
+    for soul in range(soul):
+        if len(opp_deck) == 0:
+            refresh_penalty += refresh()
+        if opp_deck[0] == "DMG":
+            swing_damage += 1
+            opp_deck.pop(0)
+        else:
+            swing_damage = 0
+            opp_deck.pop(0)
+            break
+
+    if len(opp_deck) == 0:
+        refresh_penalty += refresh()
+
+    damage_of_attack = swing_damage + refresh_penalty
+    return damage_of_attack
+
+
+def hitori():
+    swing_damage = 0
+    soul = 3
+    refresh_penalty = 0
+    number_of_mills = 2
+    burn_damage = 0
+
+    # Mills
+    for mill in range(number_of_mills):
+        intermediate_burn_value = 0
+        if own_deck[0] == "CX":
+            burn_value = 2
+        else:
+            burn_value = 1
+        own_deck.pop(0)
+        for burn in range(burn_value):
+            if len(opp_deck) == 0:
+                refresh_penalty += refresh()
+            if opp_deck[0] == "DMG":
+                opp_deck.pop(0)
+                intermediate_burn_value += 1
+            else:
+                opp_deck.pop(0)
+                intermediate_burn_value = 0
+                break
+        if intermediate_burn_value == burn_value:
+            burn_damage += burn_value
+
+    # Vanilla Swing + Triggercheck
+    trigger = random.randint(1, int(own_number_of_cards))
+    if trigger <= own_soul_triggers:
+        soul += 1
+    own_deck.pop(0)
+    for soul in range(soul):
+        if len(opp_deck) == 0:
+            refresh_penalty += refresh()
+        if opp_deck[0] == "DMG":
+            swing_damage += 1
+            opp_deck.pop(0)
+        else:
+            swing_damage = 0
+            opp_deck.pop(0)
+            break
+
+    if len(opp_deck) == 0:
+        refresh_penalty += refresh()
+
+    damage_of_attack = swing_damage + refresh_penalty + burn_damage
+    return damage_of_attack
+
+
+def nijika():
+    swing_damage = 0
+    soul = 3
+    refresh_penalty = 0
+    burn_value = 2
+    on_attack_burn_damage = 0
+    cancel_burn_damage = 0
+    damage_canceled = False
+    cancel_burns = 2
+    cancel_burns_resolved = 0
+
+    # On Attack Burn
+    for burn in range(burn_value):
+        if len(opp_deck) == 0:
+            refresh_penalty += refresh()
+        if opp_deck[0] == "DMG":
+            on_attack_burn_damage += 1
+            opp_deck.pop(0)
+        else:
+            opp_deck.pop(0)
+            on_attack_burn_damage = 0
+            damage_canceled = True
+            break
+
+    if damage_canceled and cancel_burns_resolved < cancel_burns:
+        cancel_burns_resolved += 1
+        if len(opp_deck) == 0:
+            refresh_penalty += refresh()
+        if opp_deck[0] == "DMG":
+            cancel_burn_damage += 1
+            opp_deck.pop(0)
+            damage_canceled = False
+        else:
+            opp_deck.pop(0)
+            damage_canceled = True
+
+    if damage_canceled and cancel_burns_resolved < cancel_burns:
+        cancel_burns_resolved += 1
+        if len(opp_deck) == 0:
+            refresh_penalty += refresh()
+        if opp_deck[0] == "DMG":
+            cancel_burn_damage += 1
+            opp_deck.pop(0)
+            damage_canceled = False
+        else:
+            opp_deck.pop(0)
+
+    # Vanilla Swing + Triggercheck
+    trigger = random.randint(1, int(own_number_of_cards))
+    if trigger <= own_soul_triggers:
+        soul += 1
+    own_deck.pop(0)
+    for soul in range(soul):
+        if len(opp_deck) == 0:
+            refresh_penalty += refresh()
+        if opp_deck[0] == "DMG":
+            swing_damage += 1
+            opp_deck.pop(0)
+        else:
+            swing_damage = 0
+            opp_deck.pop(0)
+            damage_canceled = True
+            break
+
+    if damage_canceled and cancel_burns_resolved < cancel_burns:
+        cancel_burns_resolved += 1
+        if len(opp_deck) == 0:
+            refresh_penalty += refresh()
+        if opp_deck[0] == "DMG":
+            cancel_burn_damage += 1
+            opp_deck.pop(0)
+            damage_canceled = False
+        else:
+            opp_deck.pop(0)
+            damage_canceled = True
+
+    if damage_canceled and cancel_burns_resolved < cancel_burns:
+        cancel_burns_resolved += 1
+        if len(opp_deck) == 0:
+            refresh_penalty += refresh()
+        if opp_deck[0] == "DMG":
+            cancel_burn_damage += 1
+            opp_deck.pop(0)
+        else:
+            opp_deck.pop(0)
+
+    if len(opp_deck) == 0:
+        refresh_penalty += refresh()
+
+    damage_of_attack = swing_damage + refresh_penalty + on_attack_burn_damage + cancel_burn_damage
+    return damage_of_attack
+
+
+def azula():
+    swing_damage = 0
+    burn_damage = 0
+    burn_value = 3
+    soul = 2
+    refresh_penalty = 0
+
+    # Vanilla Swing + Triggercheck
+    soul += own_deck[0]
+    own_deck.pop(0)
+    for soul in range(soul):
+        if len(opp_deck) == 0:
+            refresh_penalty += refresh()
+        if opp_deck[0] == "DMG":
+            swing_damage += 1
+            opp_deck.pop(0)
+        else:
+            swing_damage = 0
+            opp_deck.pop(0)
+            break
+
+    if len(opp_deck) == 0:
+        refresh_penalty += refresh()
+
+    # Topdeck char and burn
+    opp_deck.insert(0, "DMG")
+    for burn in range(burn_value):
+        if len(opp_deck) == 0:
+            refresh_penalty += refresh()
+        if opp_deck[0] == "DMG":
+            burn_damage += 1
+            opp_deck.pop(0)
+        else:
+            burn_damage = 0
+            opp_deck.pop(0)
+            break
+
+    if len(opp_deck) == 0:
+        refresh_penalty += refresh()
+
+    damage_of_attack = swing_damage + burn_damage + refresh_penalty
+    return damage_of_attack
+
+
+def onk_kana_with_two_aqua():
+    soul = 3
+    swing_damage = 0
+    burn_value = 2
+    icy_tail_value = 3
+    refresh_penalty = 0
+    icy_tail_damage = 0
+    cx_hits = 0
+    damage_canceled = False
+
+    # Aqua Topcheck #1
+    if opp_deck[0] == "CX":
+        opp_deck.pop(0)
+        opp_deck.append("CX")
+    elif opp_deck[0] == "lvl0":
+        opp_deck.pop(0)
+        opp_deck.append("lvl0")
+
+    # Aqua Topcheck #2
+    if opp_deck[0] == "CX":
+        opp_deck.pop(0)
+        opp_deck.append("CX")
+    elif opp_deck[0] == "lvl0":
+        opp_deck.pop(0)
+        opp_deck.append("lvl0")
+
+    # Vanilla Swing + Triggercheck
+    soul += own_deck[0]
+    own_deck.pop(0)
+    for soul in range(soul):
+        if len(opp_deck) == 0:
+            refresh_penalty += refresh()
+        if opp_deck[0] == "lvl0" or opp_deck[0] == "lvl1":
+            swing_damage += 1
+            opp_deck.pop(0)
+        else:
+            swing_damage = 0
+            opp_deck.pop(0)
+            damage_canceled = True
+            break
+
+    # Icy-Tail effect
+    if damage_canceled:
+        for icy_tail in range(icy_tail_value):
+            if len(opp_deck) == 0:
+                refresh_penalty += refresh()
+            if opp_deck[-1] == "CX" or opp_deck[-1] == "lvl0":
+                cx_hits += 1
+                opp_deck.pop(-1)
+            else:
+                opp_deck.pop(-1)
+
+        # Damage dealing loop
+        for icy_tail_cx in range(cx_hits):
+            intermediate_burn_value = 0
+            for burn in range(burn_value):
+                if len(opp_deck) == 0:
+                    refresh_penalty += refresh()
+                if opp_deck[0] == "lvl0" or opp_deck[0] == "lvl1":
+                    opp_deck.pop(0)
+                    intermediate_burn_value += 1
+                else:
+                    opp_deck.pop(0)
+                    intermediate_burn_value = 0
+                    break
+            if intermediate_burn_value == burn_value:
+                icy_tail_damage += burn_value
+
+    if len(opp_deck) == 0:
+        refresh_penalty += refresh()
+
+    damage_of_attack = icy_tail_damage + refresh_penalty + swing_damage
+    return damage_of_attack
+
+
+def onk_kana_with_aqua():
+    soul = 3
+    swing_damage = 0
+    burn_value = 2
+    icy_tail_value = 3
+    refresh_penalty = 0
+    icy_tail_damage = 0
+    cx_hits = 0
+    damage_canceled = False
+
+    # Aqua Topcheck
+    if opp_deck[0] == "CX":
+        opp_deck.pop(0)
+        opp_deck.append("CX")
+    elif opp_deck[0] == "lvl0":
+        opp_deck.pop(0)
+        opp_deck.append("lvl0")
+
+    # Vanilla Swing + Triggercheck
+    soul += own_deck[0]
+    own_deck.pop(0)
+    for soul in range(soul):
+        if len(opp_deck) == 0:
+            refresh_penalty += refresh()
+        if opp_deck[0] == "lvl0" or opp_deck[0] == "lvl1":
+            swing_damage += 1
+            opp_deck.pop(0)
+        else:
+            swing_damage = 0
+            opp_deck.pop(0)
+            damage_canceled = True
+            break
+
+    # Icy-Tail effect
+    if damage_canceled:
+        for icy_tail in range(icy_tail_value):
+            if len(opp_deck) == 0:
+                refresh_penalty += refresh()
+            if opp_deck[-1] == "CX" or opp_deck[-1] == "lvl0":
+                cx_hits += 1
+                opp_deck.pop(-1)
+            else:
+                opp_deck.pop(-1)
+
+        # Damage dealing loop
+        for icy_tail_cx in range(cx_hits):
+            intermediate_burn_value = 0
+            for burn in range(burn_value):
+                if len(opp_deck) == 0:
+                    refresh_penalty += refresh()
+                if opp_deck[0] == "lvl0" or opp_deck[0] == "lvl1":
+                    opp_deck.pop(0)
+                    intermediate_burn_value += 1
+                else:
+                    opp_deck.pop(0)
+                    intermediate_burn_value = 0
+                    break
+            if intermediate_burn_value == burn_value:
+                icy_tail_damage += burn_value
+
+    if len(opp_deck) == 0:
+        refresh_penalty += refresh()
+
+    damage_of_attack = icy_tail_damage + refresh_penalty + swing_damage
+    return damage_of_attack
+
+
+def onk_kana():
+    soul = 3
+    swing_damage = 0
+    burn_value = 2
+    icy_tail_value = 3
+    refresh_penalty = 0
+    icy_tail_damage = 0
+    cx_hits = 0
+    damage_canceled = False
+
+    # Vanilla Swing + Triggercheck
+    soul += own_deck[0]
+    own_deck.pop(0)
+    for soul in range(soul):
+        if len(opp_deck) == 0:
+            refresh_penalty += refresh()
+        if opp_deck[0] == "lvl0" or opp_deck[0] == "lvl1":
+            swing_damage += 1
+            opp_deck.pop(0)
+        else:
+            swing_damage = 0
+            opp_deck.pop(0)
+            damage_canceled = True
+            break
+
+    # Icy-Tail effect
+    if damage_canceled:
+        for icy_tail in range(icy_tail_value):
+            if len(opp_deck) == 0:
+                refresh_penalty += refresh()
+            if opp_deck[-1] == "CX" or opp_deck[-1] == "lvl0":
+                cx_hits += 1
+                opp_deck.pop(-1)
+            else:
+                opp_deck.pop(-1)
+
+        # Damage dealing loop
+        for icy_tail_cx in range(cx_hits):
+            intermediate_burn_value = 0
+            for burn in range(burn_value):
+                if len(opp_deck) == 0:
+                    refresh_penalty += refresh()
+                if opp_deck[0] == "lvl0" or opp_deck[0] == "lvl1":
+                    opp_deck.pop(0)
+                    intermediate_burn_value += 1
+                else:
+                    opp_deck.pop(0)
+                    intermediate_burn_value = 0
+                    break
+            if intermediate_burn_value == burn_value:
+                icy_tail_damage += burn_value
+
+    if len(opp_deck) == 0:
+        refresh_penalty += refresh()
+
+    damage_of_attack = icy_tail_damage + refresh_penalty + swing_damage
+    return damage_of_attack
+
+
+def aegis_anna():
+    soul = 3
+    swing_damage = 0
+    icy_tail_value = 6
+    refresh_penalty = 0
+    icy_tail_damage = 0
+    cx_hits = 0
+
+    # Icy-Tail effect
+    for value in range(icy_tail_value):
+        if len(opp_deck) == 0:
+            refresh_penalty += refresh()
+        if opp_deck[-1] == "CX":
+            cx_hits += 1
+            opp_deck.pop(-1)
+        else:
+            opp_deck.pop(-1)
+
+    # Burn 1 for each CX
+    for icy_tail_cx in range(cx_hits):
+        if len(opp_deck) == 0:
+            refresh_penalty += refresh()
+        if opp_deck[0] == "DMG":
+            opp_deck.pop(0)
+            icy_tail_damage += 1
+        else:
+            opp_deck.pop(0)
+
+    # Vanilla Swing + Triggercheck
+    soul += own_deck[0]
+    own_deck.pop(0)
+    for soul in range(soul):
+        if len(opp_deck) == 0:
+            refresh_penalty += refresh()
+        if opp_deck[0] == "DMG":
+            swing_damage += 1
+            opp_deck.pop(0)
+        else:
+            swing_damage = 0
+            opp_deck.pop(0)
+            break
+
+    if len(opp_deck) == 0:
+        refresh_penalty += refresh()
+
+    damage_of_attack = icy_tail_damage + refresh_penalty + swing_damage
+    return damage_of_attack
+
+
+def bunko_asuna():
+    soul = 3
+    cancel_burn_value = 2
+    swing_damage = 0
+    cancel_burn_damage_1 = 0
+    cancel_burn_damage_2 = 0
+    attack_canceled = False
+    burn_canceled = False
+    refresh_penalty = 0
+
+    # Vanilla Swing + Triggercheck
+    soul += own_deck[0]
+    own_deck.pop(0)
+    for soul in range(soul):
+        if len(opp_deck) == 0:
+            refresh_penalty += refresh()
+        if opp_deck[0] == "DMG":
+            swing_damage += 1
+            opp_deck.pop(0)
+        else:
+            swing_damage = 0
+            opp_deck.pop(0)
+            attack_canceled = True
+            break
+
+    if len(opp_deck) == 0:
+        refresh_penalty += refresh()
+
+    # Cancel Burn 2 No.1
+    if attack_canceled:
+        for cancel_burn in range(cancel_burn_value):
+            if len(opp_deck) == 0:
+                refresh_penalty += refresh()
+            if opp_deck[0] == "DMG":
+                cancel_burn_damage_1 += 1
+                opp_deck.pop(0)
+            elif attack_canceled:
+                opp_deck.pop(0)
+                cancel_burn_damage_1 = 0
+                burn_canceled = True
+                break
+
+    # Cancel Burn 2 No.2
+    if burn_canceled:
+        for cancel_burn in range(cancel_burn_value):
+            if len(opp_deck) == 0:
+                refresh_penalty += refresh()
+            if opp_deck[0] == "DMG":
+                cancel_burn_damage_2 += 1
+                opp_deck.pop(0)
+            elif attack_canceled:
+                opp_deck.pop(0)
+                cancel_burn_damage_2 = 0
+                break
+
+    damage_of_attack = swing_damage + cancel_burn_damage_1 + cancel_burn_damage_2 + refresh_penalty
+    return damage_of_attack
+
+
+def shana():
+    swing_damage = 0
+    burn_damage = 0
+    burn_value = 4
+    no_of_your_other_characters = 4
+    soul = 3
+    burn_damage_canceled = False
+    refresh_penalty = 0
+
+    # On Attack Burn
+    for burn in range(burn_value):
+        if len(opp_deck) == 0:
+            refresh_penalty += refresh()
+        if opp_deck[0] == "DMG":
+            burn_damage += 1
+            opp_deck.pop(0)
+        else:
+            opp_deck.pop(0)
+            burn_damage = 0
+            burn_damage_canceled = True
+            break
+
+    if burn_damage_canceled:
+        # Shuffling back damage
+        for char in range(no_of_your_other_characters):
+            opp_deck.append("DMG")
+        random.shuffle(opp_deck)
+
+    # Vanilla Swing + Triggercheck
+    soul += own_deck[0]
+    own_deck.pop(0)
+    for soul in range(soul):
+        if len(opp_deck) == 0:
+            refresh_penalty += refresh()
+        if opp_deck[0] == "DMG":
+            swing_damage += 1
+            opp_deck.pop(0)
+        else:
+            swing_damage = 0
+            opp_deck.pop(0)
+            break
+
+    if len(opp_deck) == 0:
+        refresh_penalty += refresh()
+
+    damage_of_attack = swing_damage + burn_damage + refresh_penalty
+    return damage_of_attack
+
+
+def aang():
+    milled_cards = 5
+    swing_damage = 0
+    burn_damage = 0
+    burn_value = 3
+    soul = 3
+    reshuffled_cards = 2
+    refresh_penalty = 0
+    clockkick = 0
+    colors = 0
+
+    try:
+        if own_deck.index("y") < milled_cards:
+            colors += 1
+    except:
+        pass
+    try:
+        if own_deck.index("g") < milled_cards:
+            colors += 1
+    except:
+        pass
+    try:
+        if own_deck.index("r") < milled_cards:
+            colors += 1
+    except:
+        pass
+    try:
+        if own_deck.index("b") < milled_cards:
+            colors += 1
+    except:
+        pass
+
+    # Shuffling back damage
+    if colors >= 2:
+        for char in range(reshuffled_cards):
+            opp_deck.append("DMG")
+        random.shuffle(opp_deck)
+
+    # Burn 3
+    if colors >= 3:
+        for burn in range(burn_value):
+            if len(opp_deck) == 0:
+                refresh_penalty += refresh()
+            if opp_deck[0] == "DMG":
+                burn_damage += 1
+                opp_deck.pop(0)
+            else:
+                opp_deck.pop(0)
+                burn_damage = 0
+                break
+
+    # Clock opp topdeck
+    if colors == 4:
+        if len(opp_deck) == 0:
+            refresh_penalty += refresh()
+        clockkick += 1
+        opp_deck.pop(0)
+
+    # Mill own deck
+    del own_deck[:milled_cards]
+
+    # Vanilla Swing + Triggercheck
+    trigger = random.randint(1, int(own_number_of_cards))
+    if trigger <= own_soul_triggers:
+        soul += 1
+    own_deck.pop(0)
+    for soul in range(soul):
+        if len(opp_deck) == 0:
+            refresh_penalty += refresh()
+        if opp_deck[0] == "DMG":
+            swing_damage += 1
+            opp_deck.pop(0)
+        else:
+            swing_damage = 0
+            opp_deck.pop(0)
+            break
+
+    if len(opp_deck) == 0:
+        refresh_penalty += refresh()
+
+    damage_of_attack = swing_damage + refresh_penalty + burn_damage + clockkick
+    return damage_of_attack
+
+
+def aang_guaranteed():
+    milled_cards = 5
+    swing_damage = 0
+    burn_damage = 0
+    burn_value = 3
+    soul = 3
+    reshuffled_cards = 2
+    refresh_penalty = 0
+    clockkick = 0
+
+    # Shuffling back damage
+    for char in range(reshuffled_cards):
+        opp_deck.append("DMG")
+    random.shuffle(opp_deck)
+
+    # Burn 3
+    for burn in range(burn_value):
+        if len(opp_deck) == 0:
+            refresh_penalty += refresh()
+        if opp_deck[0] == "DMG":
+            burn_damage += 1
+            opp_deck.pop(0)
+        else:
+            opp_deck.pop(0)
+            burn_damage = 0
+            break
+
+    # Clock opp topdeck
+    if len(opp_deck) == 0:
+        refresh_penalty += refresh()
+    clockkick += 1
+    opp_deck.pop(0)
+
+    # Mill own deck
+    del own_deck[:milled_cards]
+
+    # Vanilla Swing + Triggercheck
+    soul += own_deck[0]
+    own_deck.pop(0)
+    for soul in range(soul):
+        if len(opp_deck) == 0:
+            refresh_penalty += refresh()
+        if opp_deck[0] == "DMG":
+            swing_damage += 1
+            opp_deck.pop(0)
+        else:
+            swing_damage = 0
+            opp_deck.pop(0)
+            break
+
+    if len(opp_deck) == 0:
+        refresh_penalty += refresh()
+
+    damage_of_attack = swing_damage + refresh_penalty + burn_damage + clockkick
+    return damage_of_attack
+
+
 def ney():
     milled_cards = 7
     swing_damage = 0
@@ -1225,32 +2841,6 @@ def escanor_front():
     return damage_of_attack
 
 
-def vanilla3():
-    soul = 3
-    swing_damage = 0
-    refresh_penalty = 0
-
-    # Vanilla Swing + Triggercheck
-    soul += own_deck[0]
-    own_deck.pop(0)
-    for soul in range(soul):
-        if len(opp_deck) == 0:
-            refresh_penalty += refresh()
-        if opp_deck[0] == "DMG":
-            swing_damage += 1
-            opp_deck.pop(0)
-        else:
-            swing_damage = 0
-            opp_deck.pop(0)
-            break
-
-    if len(opp_deck) == 0:
-        refresh_penalty += refresh()
-
-    damage_of_attack = swing_damage + refresh_penalty
-    return damage_of_attack
-
-
 def kyoko_d4dj():
     soul = 3
     swing_damage = 0
@@ -1429,33 +3019,6 @@ def eren_titan():
     return damage_of_attack
 
 
-def vanilla2():
-    soul = 2
-    swing_damage = 0
-    refresh_penalty = 0
-
-    # Vanilla Swing + Triggercheck
-    trigger = random.randint(1, int(own_number_of_cards))
-    if trigger <= own_soul_triggers:
-        soul += 1
-    for soul in range(soul):
-        if len(opp_deck) == 0:
-            refresh_penalty += refresh()
-        if opp_deck[0] == "DMG":
-            swing_damage += 1
-            opp_deck.pop(0)
-        else:
-            swing_damage = 0
-            opp_deck.pop(0)
-            break
-
-    if len(opp_deck) == 0:
-        refresh_penalty += refresh()
-
-    damage_of_attack = swing_damage + refresh_penalty
-    return damage_of_attack
-
-
 def icy_tail_4():
     soul = 3
     swing_damage = 0
@@ -1597,67 +3160,6 @@ def misuzu_key():
         refresh_penalty += refresh()
 
     damage_of_attack = swing_damage + burn_damage + refresh_penalty
-    return damage_of_attack
-
-
-def iruru_bar():
-    soul = 4
-    swing_damage = 0
-    refresh_penalty = 0
-    cancel_burn_damage = 0
-    on_attack_burn_damage = 0
-    attack_canceled = False
-
-    # On Attack Burn
-    if own_deck[0] != "CX":
-        if opp_deck[0] == "DMG":
-            on_attack_burn_damage = 1
-            opp_deck.pop(0)
-        else:
-            opp_deck.pop(0)
-
-    # Vanilla Swing + Triggercheck
-    if own_deck[0] == "soul":
-        soul += 1
-        own_deck.pop(0)
-    elif own_deck[0] == "CX":
-        own_deck.pop(0)
-        own_deck.pop(0)
-    else:
-        own_deck.pop(0)
-    cancel_burn_value = soul
-    for soul in range(soul):
-        if len(opp_deck) == 0:
-            refresh_penalty += refresh()
-        if opp_deck[0] == "DMG":
-            swing_damage += 1
-            opp_deck.pop(0)
-        else:
-            swing_damage = 0
-            opp_deck.pop(0)
-            attack_canceled = True
-            break
-
-    if len(opp_deck) == 0:
-        refresh_penalty += refresh()
-
-    # Cancel burn
-    if attack_canceled:
-        for cancel in range(cancel_burn_value):
-            if len(opp_deck) == 0:
-                refresh_penalty += refresh()
-            if opp_deck[0] == "DMG":
-                cancel_burn_damage += 1
-                opp_deck.pop(0)
-            else:
-                cancel_burn_damage = 0
-                opp_deck.pop(0)
-                break
-
-    if len(opp_deck) == 0:
-        refresh_penalty += refresh()
-
-    damage_of_attack = swing_damage + cancel_burn_damage + refresh_penalty + on_attack_burn_damage
     return damage_of_attack
 
 
