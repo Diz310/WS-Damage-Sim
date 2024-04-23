@@ -235,45 +235,7 @@ def sim(decksize, climaxes):
             own_deck.append(0)
         for own_2soul in range(own_2soul_triggers):
             own_deck.append(2)
-        # for cx in range(own_number_of_climaxes):
-        #     own_deck.append("CX")
-        # for dmg in range(own_number_of_damage):
-        #     own_deck.append("DMG")
-        # for green in range(no_of_yellow):
-        #     own_deck.append("y")
-        # for blue in range(no_of_green):
-        #     own_deck.append("g")
-        # for green in range(no_of_red):
-        #     own_deck.append("r")
-        # for green in range(no_of_blue):
-        #     own_deck.append("b")
-        # for lvl0 in range(no_of_lv0):
-        #     own_deck.append("lvl0")
-        # for lvl1 in range(no_of_lv1):
-        #     own_deck.append("lvl1")
-        # for lvl2 in range(no_of_lv2):
-        #     own_deck.append("lvl2")
-        # for lvl3 in range(no_of_lv3):
-        #     own_deck.append("lvl3")
         random.shuffle(own_deck)
-
-        # # Gilthunder Rearrange SDS
-        # rearranged_deck = own_deck.copy()
-        # del rearranged_deck[3:]
-        # rearranged_deck.sort(reverse=True)
-        # del own_deck[:3]
-        # rearranged_deck.extend(own_deck)
-        # own_deck = rearranged_deck
-
-        # LRC Attack Order
-        # if opp_deck[0] == "CX" or opp_deck[0] == "lvl0":
-        #     total_damage += chisato_single()
-        #     total_damage += chisato_single()
-        #     total_damage += vanilla3()
-        # else:
-        #     total_damage += vanilla3()
-        #     total_damage += chisato_single()
-        #     total_damage += chisato_single()
 
         # Defining finishing turn
         total_damage += csm_choice()
