@@ -35,35 +35,123 @@ no_of_yellow = 8
 no_of_red = 4
 no_of_blue = 4
 
+# Defining needed global variables
+global damage_canceled
+
 
 def sim(decksize, climaxes):
     dmg_opp_first_deck = decksize - climaxes
 
     results = []
 
-    # Defining finishers
-    # noinspection PyBroadException
-    def csm_aki_with_events():
-        soul = 3
+    # Deck-Refresh function
+    def refresh():
+        for second_cx in range(cx_opp_second_deck):
+            opp_deck.append("CX")
+        for second_dmg in range(dmg_opp_second_deck):
+            opp_deck.append("DMG")
+        random.shuffle(opp_deck)
+        opp_deck.pop(0)
+        refresh_damage = 1
+        return refresh_damage
+
+    # Defining basic Weiss effects
+    def swing(soul):
         swing_damage = 0
-        icy_tail_value = 4
+        refresh_penalty = 0
+        global damage_canceled
+
+        # Vanilla Swing + Triggercheck
+        soul += own_deck[0]
+        own_deck.pop(0)
+        for soul in range(soul):
+            if len(opp_deck) == 0:
+                refresh_penalty += refresh()
+            if opp_deck[0] == "DMG":
+                swing_damage += 1
+                opp_deck.pop(0)
+            else:
+                swing_damage = 0
+                opp_deck.pop(0)
+                damage_canceled = True
+                break
+
+        if len(opp_deck) == 0:
+            refresh_penalty += refresh()
+
+        return swing_damage + refresh_penalty
+
+    def burn(value):
+        burn_damage = 0
+        refresh_penalty = 0
+        global damage_canceled
+
+        for burns in range(value):
+            if len(opp_deck) == 0:
+                refresh_penalty += refresh()
+            if opp_deck[0] == "DMG":
+                burn_damage += 1
+                opp_deck.pop(0)
+            else:
+                opp_deck.pop(0)
+                burn_damage = 0
+                damage_canceled = True
+                break
+
+        if len(opp_deck) == 0:
+            refresh_penalty += refresh()
+
+        return burn_damage + refresh_penalty
+
+    def icytail(value):
         refresh_penalty = 0
         icy_tail_damage = 0
         cx_hits = 0
-        event_counter = 3
-
-        # Event checks
-        while event_counter > 0:
-            if len(opp_deck) == 0:
-                refresh_penalty += refresh()
-            if opp_deck[-1] == "DMG":
-                opp_deck.pop(-1)
-            else:
-                break
-            event_counter -= 1
 
         # Icy-Tail effect
-        for value in range(icy_tail_value):
+        for card in range(value):
+            if len(opp_deck) == 0:
+                refresh_penalty += refresh()
+            if opp_deck[-1] == "CX":
+                cx_hits += 1
+                opp_deck.pop(-1)
+            else:
+                opp_deck.pop(-1)
+
+        for icy_tail_cx in range(cx_hits):
+            if len(opp_deck) == 0:
+                refresh_penalty += refresh()
+            if opp_deck[0] == "DMG":
+                opp_deck.pop(0)
+                icy_tail_damage += 1
+            else:
+                opp_deck.pop(0)
+                icy_tail_damage = 0
+                break
+
+        if len(opp_deck) == 0:
+            refresh_penalty += refresh()
+
+        return icy_tail_damage + refresh_penalty
+
+    def shuffleback(value):
+        refresh_penalty = 0
+        if len(opp_deck) == 0:
+            refresh_penalty += refresh()
+
+        for char in range(value):
+            opp_deck.append("DMG")
+        random.shuffle(opp_deck)
+
+        return refresh_penalty
+
+    def ping_icytail(value):
+        refresh_penalty = 0
+        icy_tail_damage = 0
+        cx_hits = 0
+
+        # Icy-Tail effect
+        for value in range(value):
             if len(opp_deck) == 0:
                 refresh_penalty += refresh()
             if opp_deck[-1] == "CX":
@@ -82,46 +170,49 @@ def sim(decksize, climaxes):
             else:
                 opp_deck.pop(0)
 
-        # Event checks
-        while event_counter > 0:
-            if len(opp_deck) == 0:
-                refresh_penalty += refresh()
-            if opp_deck[-1] == "DMG":
-                opp_deck.pop(-1)
-            else:
-                break
-            event_counter -= 1
+        if len(opp_deck) == 0:
+            refresh_penalty += refresh()
 
-        # Vanilla Swing + Triggercheck
-        soul += own_deck[0]
-        own_deck.pop(0)
-        for soul in range(soul):
-            if len(opp_deck) == 0:
-                refresh_penalty += refresh()
-            if opp_deck[0] == "DMG":
-                swing_damage += 1
-                opp_deck.pop(0)
-            else:
-                swing_damage = 0
-                opp_deck.pop(0)
-                break
+        return icy_tail_damage + refresh_penalty
+
+    def moca(value):
+        refresh_penalty = 0
 
         if len(opp_deck) == 0:
             refresh_penalty += refresh()
 
-        damage_of_attack = icy_tail_damage + refresh_penalty + swing_damage
-        return damage_of_attack
+        if len(opp_deck) < value:
+            value = len(opp_deck)
+        for card in range(value):
+            if opp_deck[value-1] == "CX":
+                opp_deck.pop(value-1)
+            value -= 1
 
-    # Deck-Refresh function
-    def refresh():
-        for second_cx in range(cx_opp_second_deck):
-            opp_deck.append("CX")
-        for second_dmg in range(dmg_opp_second_deck):
-            opp_deck.append("DMG")
-        random.shuffle(opp_deck)
-        opp_deck.pop(0)
-        refresh_damage = 1
-        return refresh_damage
+        if len(opp_deck) == 0:
+            refresh_penalty += refresh()
+
+        return refresh_penalty
+
+    # Defining finishers
+    # noinspection PyBroadException
+    def csm_choice():
+        attack_damage = 0
+
+        attack_damage += burn(1)
+        attack_damage += swing(3)
+        attack_damage += burn(2)
+        opp_deck.insert(0, "DMG")
+
+        return attack_damage
+
+    def csm_topdecker():
+        attack_damage = 0
+
+        opp_deck.insert(0, "DMG")
+        opp_deck.insert(0, "DMG")
+        attack_damage += swing(4)
+
+        return attack_damage
 
     # Start Sim Loop
     i = 1
@@ -185,9 +276,14 @@ def sim(decksize, climaxes):
         #     total_damage += chisato_single()
 
         # Defining finishing turn
-        total_damage += csm_aki_with_events()
-        total_damage += csm_aki_with_events()
-        total_damage += csm_aki_with_events()
+        total_damage += csm_choice()
+        total_damage += csm_choice()
+        total_damage += csm_topdecker()
+
+        # Opponent drawing a card at the start of their turn
+        opp_deck.pop(0)
+        if len(opp_deck) == 0:
+            total_damage += 1
 
         results.append(int(total_damage))
         i += 1
